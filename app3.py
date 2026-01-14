@@ -8,23 +8,22 @@ import streamlit.components.v1 as components
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- 🚀 1. FORCED ADS INJECTION ---
-# Banner theryala-na Social Bar popup kandippa mobile-la theryum
-def inject_ads():
-    ad_html = """
-    <div style="background-color: #f1f1f1; border: 1px solid #ccc; text-align: center; padding: 10px; margin-bottom: 20px;">
-        <p style="color: #666; font-size: 12px; margin: 0;">Advertisement</p>
+# --- 🚀 MOBILE ADS LAYOUT (Old Working Method) ---
+def show_mobile_ads():
+    # Direct Social Bar script - Mobile-la popup vara idhu dhaan best
+    ad_code = """
+    <div style="text-align:center; margin-bottom: 20px;">
         <script type='text/javascript' src='https://pl28476980.effectivegatecpm.com/3f/ef/4a/3fef4a10ead8e81f2c13e14909da9ce3.js'></script>
     </div>
     """
-    # Height-a 180-ku ethittaen, appo dhaan PC-la layout space theryum
-    components.html(ad_html, height=180)
+    # height 100 vechaa space theryum, script trigger aagum
+    components.html(ad_code, height=100)
 
-# --- 💰 PAYMENT & PREMIUM CONFIG ---
+# --- 💰 PAYMENT & PREMIUM ---
 gpay_number = "7094914276"
 upi_url = f"upi://pay?pa={gpay_number}@okicici&pn=Royal%20PDF%20Product&cu=INR"
 
-# --- 🛠️ SIDEBAR ---
+# --- 🛠️ SIDEBAR NAVIGATION ---
 st.sidebar.title("🛠️ PDF Toolkit")
 app_mode = st.sidebar.radio("Select a Tool", [
     "Merge PDFs", 
@@ -43,7 +42,7 @@ st.sidebar.markdown(f'''
     </a>
 ''', unsafe_allow_html=True)
 
-# --- 🖼️ PDF PREVIEW LOGIC ---
+# --- 🖼️ PDF PREVIEW LOGIC (Full Restoration) ---
 def show_pdf_preview(file_bytes, key_prefix):
     try:
         doc = fitz.open(stream=file_bytes, filetype="pdf")
@@ -61,7 +60,7 @@ def show_pdf_preview(file_bytes, key_prefix):
 # --- 👑 PREMIUM PAGE ---
 if app_mode == "👑 Premium Plan":
     st.title("👑 Royal PDF Premium")
-    st.info("Upgrade for ₹99 to enjoy ad-free experience.")
+    st.info("Upgrade for ₹99 to enjoy ad-free experience on mobile.")
     st.markdown(f'''
         <a href="{upi_url}" target="_blank" style="text-decoration: none;">
             <div style="background-color: #34a853; color: white; padding: 20px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 20px;">
@@ -70,10 +69,9 @@ if app_mode == "👑 Premium Plan":
         </a>
     ''', unsafe_allow_html=True)
 
-# --- 🚀 MAIN TOOLS ---
+# --- 🚀 MAIN TOOLS (Fixed Syntax) ---
 else:
-    # Ads Layout Rendering
-    inject_ads()
+    show_mobile_ads() # Ads trigger here
     st.title(f"🚀 Royal PDF {app_mode}")
 
     if app_mode == "Merge PDFs":
@@ -105,4 +103,13 @@ else:
         if file:
             doc = fitz.open(stream=file.getvalue(), filetype="pdf")
             page_items = [f"Page {i+1}" for i in range(len(doc))]
-            sorted_items =
+            # Syntax fixed here:
+            sorted_items = sort_items(page_items, direction="horizontal")
+            if st.button("🚀 Apply Changes & Download"):
+                new_indices = [int(item.split(" ")[1]) - 1 for item in sorted_items]
+                doc.select(new_indices)
+                st.download_button("📥 Download Result", data=doc.tobytes(), file_name="organized.pdf")
+
+    elif app_mode == "Images to PDF":
+        images = st.file_uploader("Upload Images", type=["jpg", "png", "jpeg"], accept_multiple_files=True)
+        if images
