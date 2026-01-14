@@ -8,11 +8,11 @@ import streamlit.components.v1 as components
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- 🚀 ADSTERRA ADS (Old Method that worked on your phone) ---
+# --- 🚀 ADSTERRA ADS (Fixed URL for PC & Mobile) ---
 def show_ads_top():
-    # Direct iframe script - best for both PC and Mobile
+    # PC-la nalla therya 728x90 format script-a direct-ah inject pandrom
     ad_code = """
-    <div style="text-align:center; margin: 10px 0;">
+    <div style="text-align:center; margin: 10px 0; min-height: 100px;">
         <script type="text/javascript">
             atOptions = {
                 'key' : '3fef4a10ead8e81f2c13e14909da9ce3',
@@ -25,18 +25,25 @@ def show_ads_top():
         <script type="text/javascript" src="//www.highperformancegate.com/3fef4a10ead8e81f2c13e14909da9ce3/invoke.js"></script>
     </div>
     """
-    components.html(ad_code, height=110)
+    components.html(ad_code, height=120)
 
-# --- 💰 PAYMENT CONFIG ---
+# --- 💰 PAYMENT & PREMIUM CONFIG ---
 gpay_number = "7094914276"
 upi_url = f"upi://pay?pa={gpay_number}@okicici&pn=Royal%20PDF%20Product&cu=INR"
 
-# --- 🛠️ SIDEBAR ---
+# --- 🛠️ SIDEBAR NAVIGATION ---
 st.sidebar.title("🛠️ PDF Toolkit")
-app_mode = st.sidebar.radio("Select a Tool", ["Merge PDFs", "Split PDF", "Organize/Delete Pages", "Images to PDF", "👑 Premium Plan"])
+app_mode = st.sidebar.radio("Select a Tool", [
+    "Merge PDFs", 
+    "Split PDF", 
+    "Organize/Delete Pages", 
+    "Images to PDF", 
+    "👑 Premium Plan"
+])
 
 st.sidebar.markdown("---")
-# Buy Me a Coffee Button
+
+# Coffee Button (Direct GPay)
 st.sidebar.markdown(f'''
     <a href="{upi_url}" target="_blank" style="text-decoration: none;">
         <div style="background-color: #FFDD00; color: black; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; border: 2px solid black;">
@@ -45,7 +52,7 @@ st.sidebar.markdown(f'''
     </a>
 ''', unsafe_allow_html=True)
 
-# --- REUSABLE PREVIEW FUNCTION (Original 140-line version logic) ---
+# --- 🖼️ REUSABLE PREVIEW FUNCTION (The Original Logic) ---
 def show_pdf_preview(file_bytes, key_prefix):
     try:
         doc = fitz.open(stream=file_bytes, filetype="pdf")
@@ -57,16 +64,28 @@ def show_pdf_preview(file_bytes, key_prefix):
             pix = page.get_pixmap(matrix=fitz.Matrix(0.8, 0.8)) 
             img = Image.open(io.BytesIO(pix.tobytes()))
             cols[i % 2].image(img, use_container_width=True)
-    except:
-        st.error("Preview error.")
+    except Exception as e:
+        st.error(f"Preview error: {e}")
 
-# --- MAIN INTERFACE ---
+# --- 👑 PREMIUM PAGE ---
 if app_mode == "👑 Premium Plan":
     st.title("👑 Royal PDF Premium")
-    st.success("✅ No Ads | ✅ Fast Processing")
-    st.markdown(f'''<a href="{upi_url}" target="_blank" style="text-decoration:none;"><div style="background-color:#34a853; color:white; padding:15px; border-radius:10px; text-align:center; font-weight:bold; font-size:18px;">Pay ₹99 via GPay</div></a>''', unsafe_allow_html=True)
+    st.info("Upgrade for ₹99 to remove ads and process large files instantly.")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(f'''
+            <a href="{upi_url}" target="_blank" style="text-decoration: none;">
+                <div style="background-color: #34a853; color: white; padding: 20px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 20px;">
+                    🚀 Pay ₹99 via GPay
+                </div>
+            </a>
+        ''', unsafe_allow_html=True)
+    with col2:
+        st.image("https://www.gstatic.com/images/branding/product/2x/google_pay_96dp.png", width=100)
+
+# --- 🚀 MAIN TOOLS (Full 140+ Line Logic) ---
 else:
-    show_ads_top() # Ads on top of every tool
+    show_ads_top() # Ads back on top
     st.title(f"🚀 Royal PDF {app_mode}")
 
     if app_mode == "Merge PDFs":
@@ -91,7 +110,7 @@ else:
                 for i in range(len(doc)):
                     new_pdf = fitz.open()
                     new_pdf.insert_pdf(doc, from_page=i, to_page=i)
-                    st.download_button(f"Download Page {i+1}", data=new_pdf.tobytes(), file_name=f"page_{i+1}.pdf")
+                    st.download_button(f"Download Page {i+1}", data=new_pdf.tob previews=doc.tobytes(), file_name=f"page_{i+1}.pdf")
 
     elif app_mode == "Organize/Delete Pages":
         file = st.file_uploader("Upload PDF", type="pdf")
@@ -99,7 +118,7 @@ else:
             doc = fitz.open(stream=file.getvalue(), filetype="pdf")
             page_items = [f"Page {i+1}" for i in range(len(doc))]
             sorted_items = sort_items(page_items, direction="horizontal")
-            if st.button("🚀 Apply & Download"):
+            if st.button("🚀 Apply Changes & Download"):
                 new_indices = [int(item.split(" ")[1]) - 1 for item in sorted_items]
                 doc.select(new_indices)
                 st.download_button("📥 Download Result", data=doc.tobytes(), file_name="organized.pdf")
