@@ -3,44 +3,90 @@ import fitz  # PyMuPDF
 from PIL import Image
 import io
 from streamlit_sortables import sort_items
+import streamlit.components.v1 as components
 
-# Page Config
-st.set_page_config(page_title="PDF Master Pro", page_icon="📑", layout="wide")
+# 1. Page Config
+st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- REUSABLE PREVIEW FUNCTION (PERUSA MATHIYACHU) ---
+# --- AD NETWORK CONFIG ---
+def inject_ad_scripts():
+    # Header Script (Adsterra / PropellerAds Header Code)
+    header_script = """
+    """
+    components.html(header_script, height=0)
+
+def show_banner_ad():
+    # Fixed the variable name here
+    ad_code = """
+    <div style="text-align:center; margin: 10px 0; background:#f9f9f9; padding:10px; border-radius:8px; border:1px solid #ddd;">
+        <p style="font-size: 10px; color: gray; margin-bottom: 5px;">SPONSORED</p>
+        <div style="width:100%; height:90px; display:flex; align-items:center; justify-content:center;">
+             <span style="color:#999;">Ad Slot (Ready for Adsterra)</span>
+        </div>
+    </div>
+    """
+    components.html(ad_code, height=150)
+
+def show_social_bar():
+    # Social Bar / Pop-under invisible scripts
+    social_script = """
+    """
+    components.html(social_script, height=0)
+
+# Injecting Scripts
+inject_ad_scripts()
+show_social_bar()
+
+# --- CUSTOM CSS ---
+st.markdown("""
+    <style>
+    .buy-coffee {
+        display: flex; justify-content: center; padding: 12px;
+        background-color: #FFDD00; color: black !important; text-decoration: none;
+        border-radius: 10px; font-weight: bold; border: 2px solid black; margin: 10px 0;
+        text-align: center;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# --- REUSABLE PREVIEW FUNCTION ---
 def show_pdf_preview(file_bytes, key_prefix):
     try:
         doc = fitz.open(stream=file_bytes, filetype="pdf")
         st.write(f"🔍 **Big Preview (Total Pages: {len(doc)})**")
-        
-        # Displaying pages in a larger format (2 per row for better visibility)
-        num_previews = min(len(doc), 4) # Showing first 4 pages
-        cols = st.columns(2) # 2 columns makes the images bigger
+        num_previews = min(len(doc), 4)
+        cols = st.columns(2)
         for i in range(num_previews):
             page = doc.load_page(i)
-            # Zoom increase panniyachu (1.0 is standard size)
             pix = page.get_pixmap(matrix=fitz.Matrix(0.8, 0.8)) 
             img = Image.open(io.BytesIO(pix.tobytes()))
             cols[i % 2].image(img, caption=f"Page {i+1}", use_container_width=True)
     except Exception as e:
         st.error("Could not generate preview.")
 
-# --- MAIN INTERFACE ---
+# --- SIDEBAR ---
 st.sidebar.title("🛠️ PDF Toolkit")
-app_mode = st.sidebar.radio("Select a Tool", 
-    ["Merge PDFs", "Split PDF", "Organize/Delete Pages", "Images to PDF"])
+app_mode = st.sidebar.radio("Select a Tool", ["Merge PDFs", "Split PDF", "Organize/Delete Pages", "Images to PDF"])
 
-st.title(f"🚀 PDF {app_mode}")
+st.sidebar.markdown("---")
+show_banner_ad() # Sidebar Ad
 
-# 1. MERGE PDFs
+st.sidebar.subheader("☕ Support Project")
+upi_id = "9876543210@ybl" # Update your ID
+st.sidebar.markdown(f'<a href="upi://pay?pa={upi_id}&pn=RoyalPDF&cu=INR" class="buy-coffee">☕ Support with UPI</a>', unsafe_allow_html=True)
+
+# --- MAIN INTERFACE ---
+st.title(f"🚀 Royal PDF {app_mode}")
+show_banner_ad() # Top Ad
+
+# --- TOOLS LOGIC ---
 if app_mode == "Merge PDFs":
-    files = st.file_uploader("Upload PDFs to Combine", type="pdf", accept_multiple_files=True)
+    files = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True)
     if files:
         for idx, f in enumerate(files):
-            with st.expander(f"📄 View File: {f.name}", expanded=True):
+            with st.expander(f"📄 View: {f.name}", expanded=True):
                 show_pdf_preview(f.getvalue(), f"merge_{idx}")
-        
-        if st.button("🔗 Merge All Files"):
+        if st.button("🔗 Merge All"):
             merged_doc = fitz.open()
             for f in files:
                 f.seek(0)
@@ -48,60 +94,43 @@ if app_mode == "Merge PDFs":
                     merged_doc.insert_pdf(doc)
             st.download_button("📥 Download Merged PDF", data=merged_doc.tobytes(), file_name="merged.pdf")
 
-# 2. SPLIT PDF
 elif app_mode == "Split PDF":
-    file = st.file_uploader("Upload PDF to Split", type="pdf")
+    file = st.file_uploader("Upload PDF", type="pdf")
     if file:
-        file_bytes = file.getvalue()
-        show_pdf_preview(file_bytes, "split")
-        
+        show_pdf_preview(file.getvalue(), "split")
         if st.button("✂️ Split into Single Pages"):
-            doc = fitz.open(stream=file_bytes, filetype="pdf")
+            doc = fitz.open(stream=file.getvalue(), filetype="pdf")
             for i in range(len(doc)):
                 new_pdf = fitz.open()
                 new_pdf.insert_pdf(doc, from_page=i, to_page=i)
                 st.download_button(f"Download Page {i+1}", data=new_pdf.tobytes(), file_name=f"page_{i+1}.pdf")
 
-# 3. ORGANIZE / DELETE PAGES
 elif app_mode == "Organize/Delete Pages":
     file = st.file_uploader("Upload PDF", type="pdf")
     if file:
-        file_bytes = file.getvalue()
-        
-        # Preview expanded-ah vechukkalam
-        with st.expander("🖼️ Click to See Original Pages", expanded=True):
-            show_pdf_preview(file_bytes, "org")
-        
-        doc = fitz.open(stream=file_bytes, filetype="pdf")
+        with st.expander("🖼️ Original Pages", expanded=True):
+            show_pdf_preview(file.getvalue(), "org")
+        doc = fitz.open(stream=file.getvalue(), filetype="pdf")
         page_items = [f"Page {i+1}" for i in range(len(doc))]
-        
-        st.subheader("🖱️ Drag & Drop to Reorder")
         sorted_items = sort_items(page_items, direction="horizontal")
-        
-        if st.button("🚀 Apply Reorder & Download"):
-            try:
-                new_indices = [int(item.split(" ")[1]) - 1 for item in sorted_items]
-                output_doc = fitz.open(stream=file_bytes, filetype="pdf")
-                output_doc.select(new_indices)
-                st.download_button("📥 Download Result", data=output_doc.tobytes(), file_name="organized.pdf")
-            except Exception as e:
-                st.error(f"Error: {e}")
+        if st.button("🚀 Apply & Download"):
+            new_indices = [int(item.split(" ")[1]) - 1 for item in sorted_items]
+            doc.select(new_indices)
+            st.download_button("📥 Download Result", data=doc.tobytes(), file_name="organized.pdf")
 
-# 4. IMAGES TO PDF
 elif app_mode == "Images to PDF":
     images = st.file_uploader("Upload Images", type=["jpg", "png", "jpeg"], accept_multiple_files=True)
     if images:
-        st.write("🖼️ **Large Image Previews**")
         img_cols = st.columns(2)
         for idx, img in enumerate(images):
-            img_cols[idx % 2].image(img, use_container_width=True, caption=img.name)
-            
-        if st.button("🖼️ Convert Images to PDF"):
+            img_cols[idx % 2].image(img, use_container_width=True)
+        if st.button("🖼️ Convert to PDF"):
             new_pdf = fitz.open()
             for img in images:
-                img_data = img.read()
-                img_doc = fitz.open(stream=img_data, filetype=img.name.split(".")[-1])
-                pdf_bytes = img_doc.convert_to_pdf()
-                img_pdf = fitz.open("pdf", pdf_bytes)
-                new_pdf.insert_pdf(img_pdf)
-            st.download_button("📥 Download Image PDF", data=new_pdf.tobytes(), file_name="images_to_pdf.pdf")
+                img_doc = fitz.open(stream=img.read(), filetype=img.name.split(".")[-1])
+                new_pdf.insert_pdf(fitz.open("pdf", img_doc.convert_to_pdf()))
+            st.download_button("📥 Download Image PDF", data=new_pdf.tobytes(), file_name="images.pdf")
+
+# Bottom Ad
+st.markdown("---")
+show_banner_ad()
