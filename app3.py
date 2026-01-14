@@ -8,11 +8,11 @@ import streamlit.components.v1 as components
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- 🚀 ADSTERRA ADS FIX (Old Method) ---
+# --- 🚀 ADSTERRA ADS (Old Method that worked on your phone) ---
 def show_ads_top():
-    # Direct script injection as per your old working method
+    # Direct iframe script - best for both PC and Mobile
     ad_code = """
-    <div style="text-align:center; margin: 10px 0; min-height: 120px;">
+    <div style="text-align:center; margin: 10px 0;">
         <script type="text/javascript">
             atOptions = {
                 'key' : '3fef4a10ead8e81f2c13e14909da9ce3',
@@ -22,10 +22,10 @@ def show_ads_top():
                 'params' : {}
             };
         </script>
-        <script type="text/javascript" src="//pl28476980.effectivegatecpm.com/3f/ef/4a/3fef4a10ead8e81f2c13e14909da9ce3.js"></script>
+        <script type="text/javascript" src="//www.highperformancegate.com/3fef4a10ead8e81f2c13e14909da9ce3/invoke.js"></script>
     </div>
     """
-    components.html(ad_code, height=150)
+    components.html(ad_code, height=110)
 
 # --- 💰 PAYMENT CONFIG ---
 gpay_number = "7094914276"
@@ -36,7 +36,7 @@ st.sidebar.title("🛠️ PDF Toolkit")
 app_mode = st.sidebar.radio("Select a Tool", ["Merge PDFs", "Split PDF", "Organize/Delete Pages", "Images to PDF", "👑 Premium Plan"])
 
 st.sidebar.markdown("---")
-# Coffee Button in Sidebar
+# Buy Me a Coffee Button
 st.sidebar.markdown(f'''
     <a href="{upi_url}" target="_blank" style="text-decoration: none;">
         <div style="background-color: #FFDD00; color: black; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; border: 2px solid black;">
@@ -45,7 +45,7 @@ st.sidebar.markdown(f'''
     </a>
 ''', unsafe_allow_html=True)
 
-# --- REUSABLE PREVIEW FUNCTION (Back to Original) ---
+# --- REUSABLE PREVIEW FUNCTION (Original 140-line version logic) ---
 def show_pdf_preview(file_bytes, key_prefix):
     try:
         doc = fitz.open(stream=file_bytes, filetype="pdf")
@@ -64,9 +64,9 @@ def show_pdf_preview(file_bytes, key_prefix):
 if app_mode == "👑 Premium Plan":
     st.title("👑 Royal PDF Premium")
     st.success("✅ No Ads | ✅ Fast Processing")
-    st.markdown(f'''<a href="{upi_url}" target="_blank"><button style="background-color:green; color:white; padding:15px; border-radius:10px; width:100%; font-size:18px;">Pay ₹99 via GPay</button></a>''', unsafe_allow_html=True)
+    st.markdown(f'''<a href="{upi_url}" target="_blank" style="text-decoration:none;"><div style="background-color:#34a853; color:white; padding:15px; border-radius:10px; text-align:center; font-weight:bold; font-size:18px;">Pay ₹99 via GPay</div></a>''', unsafe_allow_html=True)
 else:
-    show_ads_top() # Ads back on top
+    show_ads_top() # Ads on top of every tool
     st.title(f"🚀 Royal PDF {app_mode}")
 
     if app_mode == "Merge PDFs":
