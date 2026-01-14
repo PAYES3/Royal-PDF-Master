@@ -8,27 +8,28 @@ import streamlit.components.v1 as components
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- 🚀 MULTI-DEVICE ADS LOGIC ---
-def show_top_ad():
-    # Indha code PC-layum Mobile-layum ads-a force panni kaatum
+# --- 🚀 ADS LOGIC (Responsive for PC & Mobile) ---
+def show_ads():
+    # Force loading Adsterra script
     ad_html = """
-    <div style="text-align:center; width:100%; overflow:hidden; min-height: 100px; margin-bottom: 20px;">
+    <div style="text-align:center; width:100%; margin: 10px 0; min-height: 120px;">
         <script type='text/javascript' src='https://pl28476980.effectivegatecpm.com/3f/ef/4a/3fef4a10ead8e81f2c13e14909da9ce3.js'></script>
     </div>
     """
-    # PC-la nalla therya height-a adjust pannirukkaen
-    components.html(ad_html, height=120)
+    components.html(ad_html, height=130, scrolling=False)
 
 # --- 💰 PAYMENT CONFIG ---
 gpay_number = "7094914276"
 upi_url = f"upi://pay?pa={gpay_number}@okicici&pn=Royal%20PDF%20Product&cu=INR"
 
-# --- 🛠️ SIDEBAR ---
+# --- 🛠️ SIDEBAR NAVIGATION ---
 st.sidebar.title("📑 Royal PDF Menu")
+# Ellaa tools-um premium-um navigation-la irukku
 app_mode = st.sidebar.radio("Select Tool", ["Merge PDFs", "Split PDF", "Organize/Delete Pages", "Images to PDF", "👑 Premium Plan"])
 
 st.sidebar.markdown("---")
-# Coffee Button in Sidebar
+
+# Buy Me a Coffee (Always visible in sidebar)
 st.sidebar.markdown(f'''
     <a href="{upi_url}" target="_blank" style="text-decoration: none;">
         <div style="background-color: #FFDD00; color: black; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; border: 2px solid black;">
@@ -40,40 +41,38 @@ st.sidebar.markdown(f'''
 # --- 👑 PREMIUM PAGE ---
 if app_mode == "👑 Premium Plan":
     st.title("👑 Royal PDF Premium")
-    st.write("PC and Mobile users can upgrade to remove ads.")
+    st.write("Upgrade for ₹99 to remove ads and unlock priority processing.")
     
     col1, col2 = st.columns(2)
     with col1:
-        st.success("✅ Ad-Free Experience | ✅ Unlimited Files")
+        st.info("✅ No Ads | ✅ Unlimited Files | ✅ Fast Speed")
         st.markdown(f'''
             <a href="{upi_url}" target="_blank" style="text-decoration: none;">
-                <div style="background-color: #34a853; color: white; padding: 20px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 20px; border: 2px solid #2d8a45;">
+                <div style="background-color: #34a853; color: white; padding: 20px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 20px;">
                     🚀 Pay ₹99 via GPay
                 </div>
             </a>
         ''', unsafe_allow_html=True)
-    
     with col2:
-        st.write("Scan to pay from any UPI App")
-        # Inga unga QR code irundha add pannalaam
+        st.image("https://www.gstatic.com/images/branding/product/2x/google_pay_96dp.png", width=100)
 
-# --- 🚀 TOOLS LOGIC ---
+# --- 🚀 TOOLS LOGIC (No lines deleted) ---
 else:
-    show_top_ad() # Display Ads for both PC and Mobile
+    show_ads() # Show ads on PC and Mobile
     st.title(f"🔥 {app_mode}")
 
     if app_mode == "Merge PDFs":
         files = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True)
-        if files and st.button("🔗 Merge All"):
+        if files and st.button("🔗 Merge Now"):
             merged_doc = fitz.open()
             for f in files:
                 with fitz.open(stream=f.read(), filetype="pdf") as doc:
                     merged_doc.insert_pdf(doc)
-            st.download_button("📥 Download", data=merged_doc.tobytes(), file_name="merged.pdf")
+            st.download_button("📥 Download Result", data=merged_doc.tobytes(), file_name="merged.pdf")
 
     elif app_mode == "Split PDF":
         file = st.file_uploader("Upload PDF", type="pdf")
-        if file and st.button("✂️ Split"):
+        if file and st.button("✂️ Split Pages"):
             doc = fitz.open(stream=file.getvalue(), filetype="pdf")
             for i in range(len(doc)):
                 new_pdf = fitz.open()
@@ -98,4 +97,4 @@ else:
             for img in images:
                 img_doc = fitz.open(stream=img.read(), filetype=img.name.split(".")[-1])
                 new_pdf.insert_pdf(fitz.open("pdf", img_doc.convert_to_pdf()))
-            st.download_button("📥 Download", data=new_pdf.tobytes(), file_name="images.pdf")
+            st.download_button("📥 Download PDF", data=new_pdf.tobytes(), file_name="images_to_pdf.pdf")
