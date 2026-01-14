@@ -8,16 +8,15 @@ import streamlit.components.v1 as components
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- 🚀 MOBILE ADS LAYOUT (Old Working Method) ---
+# --- 🚀 MOBILE ADS LAYOUT (Old Method) ---
 def show_mobile_ads():
-    # Direct Social Bar script - Mobile-la popup vara idhu dhaan best
+    # Direct script for Mobile social bar and banner
     ad_code = """
-    <div style="text-align:center; margin-bottom: 20px;">
+    <div style="text-align:center; margin-bottom: 20px; min-height: 100px;">
         <script type='text/javascript' src='https://pl28476980.effectivegatecpm.com/3f/ef/4a/3fef4a10ead8e81f2c13e14909da9ce3.js'></script>
     </div>
     """
-    # height 100 vechaa space theryum, script trigger aagum
-    components.html(ad_code, height=100)
+    components.html(ad_code, height=110)
 
 # --- 💰 PAYMENT & PREMIUM ---
 gpay_number = "7094914276"
@@ -42,7 +41,7 @@ st.sidebar.markdown(f'''
     </a>
 ''', unsafe_allow_html=True)
 
-# --- 🖼️ PDF PREVIEW LOGIC (Full Restoration) ---
+# --- 🖼️ PDF PREVIEW LOGIC ---
 def show_pdf_preview(file_bytes, key_prefix):
     try:
         doc = fitz.open(stream=file_bytes, filetype="pdf")
@@ -69,9 +68,9 @@ if app_mode == "👑 Premium Plan":
         </a>
     ''', unsafe_allow_html=True)
 
-# --- 🚀 MAIN TOOLS (Fixed Syntax) ---
+# --- 🚀 MAIN TOOLS (Fixed Syntax & Colon) ---
 else:
-    show_mobile_ads() # Ads trigger here
+    show_mobile_ads() # Ad layout at top
     st.title(f"🚀 Royal PDF {app_mode}")
 
     if app_mode == "Merge PDFs":
@@ -83,33 +82,4 @@ else:
             if st.button("🔗 Merge All"):
                 merged_doc = fitz.open()
                 for f in files:
-                    with fitz.open(stream=f.read(), filetype="pdf") as doc:
-                        merged_doc.insert_pdf(doc)
-                st.download_button("📥 Download Merged PDF", data=merged_doc.tobytes(), file_name="merged.pdf")
-
-    elif app_mode == "Split PDF":
-        file = st.file_uploader("Upload PDF", type="pdf")
-        if file:
-            show_pdf_preview(file.getvalue(), "split")
-            if st.button("✂️ Split into Single Pages"):
-                doc = fitz.open(stream=file.getvalue(), filetype="pdf")
-                for i in range(len(doc)):
-                    new_pdf = fitz.open()
-                    new_pdf.insert_pdf(doc, from_page=i, to_page=i)
-                    st.download_button(f"Download Page {i+1}", data=new_pdf.tobytes(), file_name=f"page_{i+1}.pdf")
-
-    elif app_mode == "Organize/Delete Pages":
-        file = st.file_uploader("Upload PDF", type="pdf")
-        if file:
-            doc = fitz.open(stream=file.getvalue(), filetype="pdf")
-            page_items = [f"Page {i+1}" for i in range(len(doc))]
-            # Syntax fixed here:
-            sorted_items = sort_items(page_items, direction="horizontal")
-            if st.button("🚀 Apply Changes & Download"):
-                new_indices = [int(item.split(" ")[1]) - 1 for item in sorted_items]
-                doc.select(new_indices)
-                st.download_button("📥 Download Result", data=doc.tobytes(), file_name="organized.pdf")
-
-    elif app_mode == "Images to PDF":
-        images = st.file_uploader("Upload Images", type=["jpg", "png", "jpeg"], accept_multiple_files=True)
-        if images
+                    with fitz.open(stream=f.read(), file
