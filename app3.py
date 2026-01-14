@@ -8,22 +8,23 @@ import streamlit.components.v1 as components
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- 🚀 1. ADS LAYOUT (Top Priority) ---
-def show_ads_layout():
-    # Banner Ad for PC and Social Bar for Mobile
-    # Script URL-a unga Adsterra dashboard-la irukkura maadhiriye update panni irukkaen
+# --- 🚀 1. FORCED ADS INJECTION ---
+# Banner theryala-na Social Bar popup kandippa mobile-la theryum
+def inject_ads():
     ad_html = """
-    <div id="ad-wrapper" style="text-align:center; width:100%; min-height:150px; margin-bottom: 20px;">
+    <div style="background-color: #f1f1f1; border: 1px solid #ccc; text-align: center; padding: 10px; margin-bottom: 20px;">
+        <p style="color: #666; font-size: 12px; margin: 0;">Advertisement</p>
         <script type='text/javascript' src='https://pl28476980.effectivegatecpm.com/3f/ef/4a/3fef4a10ead8e81f2c13e14909da9ce3.js'></script>
     </div>
     """
-    components.html(ad_html, height=150, scrolling=False)
+    # Height-a 180-ku ethittaen, appo dhaan PC-la layout space theryum
+    components.html(ad_html, height=180)
 
 # --- 💰 PAYMENT & PREMIUM CONFIG ---
 gpay_number = "7094914276"
 upi_url = f"upi://pay?pa={gpay_number}@okicici&pn=Royal%20PDF%20Product&cu=INR"
 
-# --- 🛠️ SIDEBAR NAVIGATION ---
+# --- 🛠️ SIDEBAR ---
 st.sidebar.title("🛠️ PDF Toolkit")
 app_mode = st.sidebar.radio("Select a Tool", [
     "Merge PDFs", 
@@ -34,7 +35,6 @@ app_mode = st.sidebar.radio("Select a Tool", [
 ])
 
 st.sidebar.markdown("---")
-# GPay Coffee Button
 st.sidebar.markdown(f'''
     <a href="{upi_url}" target="_blank" style="text-decoration: none;">
         <div style="background-color: #FFDD00; color: black; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; border: 2px solid black;">
@@ -43,7 +43,7 @@ st.sidebar.markdown(f'''
     </a>
 ''', unsafe_allow_html=True)
 
-# --- 🖼️ FULL PDF PREVIEW LOGIC (Restored Original) ---
+# --- 🖼️ PDF PREVIEW LOGIC ---
 def show_pdf_preview(file_bytes, key_prefix):
     try:
         doc = fitz.open(stream=file_bytes, filetype="pdf")
@@ -61,7 +61,7 @@ def show_pdf_preview(file_bytes, key_prefix):
 # --- 👑 PREMIUM PAGE ---
 if app_mode == "👑 Premium Plan":
     st.title("👑 Royal PDF Premium")
-    st.info("Upgrade for ₹99 to enjoy ad-free experience on mobile.")
+    st.info("Upgrade for ₹99 to enjoy ad-free experience.")
     st.markdown(f'''
         <a href="{upi_url}" target="_blank" style="text-decoration: none;">
             <div style="background-color: #34a853; color: white; padding: 20px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 20px;">
@@ -70,10 +70,10 @@ if app_mode == "👑 Premium Plan":
         </a>
     ''', unsafe_allow_html=True)
 
-# --- 🚀 MAIN TOOLS (Full 140+ Lines Logic) ---
+# --- 🚀 MAIN TOOLS ---
 else:
-    # Ads-a Title-ku mela vekkurean, appo dhaan layout-la first theryum
-    show_ads_layout()
+    # Ads Layout Rendering
+    inject_ads()
     st.title(f"🚀 Royal PDF {app_mode}")
 
     if app_mode == "Merge PDFs":
@@ -82,3 +82,27 @@ else:
             for idx, f in enumerate(files):
                 with st.expander(f"📄 {f.name}"):
                     show_pdf_preview(f.getvalue(), f"merge_{idx}")
+            if st.button("🔗 Merge All"):
+                merged_doc = fitz.open()
+                for f in files:
+                    with fitz.open(stream=f.read(), filetype="pdf") as doc:
+                        merged_doc.insert_pdf(doc)
+                st.download_button("📥 Download Merged PDF", data=merged_doc.tobytes(), file_name="merged.pdf")
+
+    elif app_mode == "Split PDF":
+        file = st.file_uploader("Upload PDF", type="pdf")
+        if file:
+            show_pdf_preview(file.getvalue(), "split")
+            if st.button("✂️ Split into Single Pages"):
+                doc = fitz.open(stream=file.getvalue(), filetype="pdf")
+                for i in range(len(doc)):
+                    new_pdf = fitz.open()
+                    new_pdf.insert_pdf(doc, from_page=i, to_page=i)
+                    st.download_button(f"Download Page {i+1}", data=new_pdf.tobytes(), file_name=f"page_{i+1}.pdf")
+
+    elif app_mode == "Organize/Delete Pages":
+        file = st.file_uploader("Upload PDF", type="pdf")
+        if file:
+            doc = fitz.open(stream=file.getvalue(), filetype="pdf")
+            page_items = [f"Page {i+1}" for i in range(len(doc))]
+            sorted_items =
