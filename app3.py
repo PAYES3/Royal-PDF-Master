@@ -8,15 +8,17 @@ import streamlit.components.v1 as components
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- 🚀 1. DIRECT ADS INJECTION ---
-def show_ads():
-    # Neenga kudutha script-a direct-ah inject pannittaen
-    # Indha script mobile-la social bar and ads-a trigger pannum
+# --- 🚀 1. CLEAN ADS INJECTION (Direct) ---
+def inject_ads():
+    # Neenga kudutha script-a oru container-kulla veikaama direct-ah tharaen
+    # Idhu browser-a force panni script-a execute panna veikkum
     ad_script = """
-    <script type='text/javascript' src='https://pl28476980.effectivegatecpm.com/3f/ef/4a/3fef4a10ead8e81f2c13e14909da9ce3.js'></script>
+    <div style="text-align:center;">
+        <script type='text/javascript' src='https://pl28476980.effectivegatecpm.com/3f/ef/4a/3fef4a10ead8e81f2c13e14909da9ce3.js'></script>
+    </div>
     """
-    # Height 0 vechaa white box theryaadhu, aana script background-la run aagum
-    components.html(ad_script, height=0)
+    # Height 1-nu vechaa screen-la edhuvum theryaadhu, aana script background-la trigger aagum
+    components.html(ad_script, height=1)
 
 # --- 💰 PAYMENT CONFIG ---
 upi_url = "upi://pay?pa=7094914276@okicici&pn=Royal%20PDF&cu=INR"
@@ -25,16 +27,24 @@ upi_url = "upi://pay?pa=7094914276@okicici&pn=Royal%20PDF&cu=INR"
 st.sidebar.title("🛠️ PDF Toolkit")
 app_mode = st.sidebar.radio("Select Tool", ["Merge PDFs", "Split PDF", "Organize Pages", "Images to PDF", "👑 Premium Plan"])
 st.sidebar.markdown("---")
-st.sidebar.markdown(f'<a href="{upi_url}" target="_blank"><button style="width:100%; background:#FFDD00; font-weight:bold; border-radius:8px; padding:10px; border:none; cursor:pointer;">☕ Buy Me a Coffee</button></a>', unsafe_allow_html=True)
+st.sidebar.markdown(f'''
+    <a href="{upi_url}" target="_blank">
+        <div style="background:#FFDD00; color:black; padding:10px; border-radius:8px; text-align:center; font-weight:bold; border:2px solid black;">
+            ☕ Buy Me a Coffee
+        </div>
+    </a>
+''', unsafe_allow_html=True)
 
 # --- 🚀 MAIN APP ---
 if app_mode == "👑 Premium Plan":
     st.title("👑 Royal PDF Premium")
-    st.markdown(f'<a href="{upi_url}"><button style="width:100%; height:60px; background:#28a745; color:white; border-radius:12px; font-weight:bold; border:none; cursor:pointer;">🚀 Pay ₹99 via GPay</button></a>', unsafe_allow_html=True)
+    st.markdown(f'<a href="{upi_url}"><button style="width:100%; height:60px; background:#28a745; color:white; border-radius:12px; font-weight:bold; font-size:18px;">🚀 Pay ₹99 via GPay</button></a>', unsafe_allow_html=True)
 
 else:
-    # Ads script background-la load aagum
-    show_ads()
+    # Ads script-a mela inject pannittaen
+    inject_ads()
+    
+    # Text and Layout-a clean-ah kaatrom
     st.title(f"📂 {app_mode}")
 
     if app_mode == "Merge PDFs":
@@ -44,7 +54,7 @@ else:
             for f in files:
                 with fitz.open(stream=f.read(), filetype="pdf") as doc_in:
                     doc_out.insert_pdf(doc_in)
-            st.download_button("📥 Download Merged PDF", data=doc_out.tobytes(), file_name="merged.pdf")
+            st.download_button("📥 Download PDF", data=doc_out.tobytes(), file_name="merged.pdf")
 
     elif app_mode == "Split PDF":
         file = st.file_uploader("Upload PDF", type="pdf")
