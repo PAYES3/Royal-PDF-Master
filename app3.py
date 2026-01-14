@@ -8,9 +8,8 @@ import streamlit.components.v1 as components
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- 🚀 ADSTERRA ADS (Fixed URL for PC & Mobile) ---
+# --- 🚀 ADSTERRA ADS (PC & Mobile-la vara fixed script) ---
 def show_ads_top():
-    # PC-la nalla therya 728x90 format script-a direct-ah inject pandrom
     ad_code = """
     <div style="text-align:center; margin: 10px 0; min-height: 100px;">
         <script type="text/javascript">
@@ -52,7 +51,7 @@ st.sidebar.markdown(f'''
     </a>
 ''', unsafe_allow_html=True)
 
-# --- 🖼️ REUSABLE PREVIEW FUNCTION (The Original Logic) ---
+# --- 🖼️ REUSABLE PREVIEW FUNCTION ---
 def show_pdf_preview(file_bytes, key_prefix):
     try:
         doc = fitz.open(stream=file_bytes, filetype="pdf")
@@ -83,9 +82,9 @@ if app_mode == "👑 Premium Plan":
     with col2:
         st.image("https://www.gstatic.com/images/branding/product/2x/google_pay_96dp.png", width=100)
 
-# --- 🚀 MAIN TOOLS (Full 140+ Line Logic) ---
+# --- 🚀 MAIN TOOLS (Full Logic Fixed) ---
 else:
-    show_ads_top() # Ads back on top
+    show_ads_top()
     st.title(f"🚀 Royal PDF {app_mode}")
 
     if app_mode == "Merge PDFs":
@@ -110,7 +109,7 @@ else:
                 for i in range(len(doc)):
                     new_pdf = fitz.open()
                     new_pdf.insert_pdf(doc, from_page=i, to_page=i)
-                    st.download_button(f"Download Page {i+1}", data=new_pdf.tob previews=doc.tobytes(), file_name=f"page_{i+1}.pdf")
+                    st.download_button(f"Download Page {i+1}", data=new_pdf.tobytes(), file_name=f"page_{i+1}.pdf")
 
     elif app_mode == "Organize/Delete Pages":
         file = st.file_uploader("Upload PDF", type="pdf")
