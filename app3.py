@@ -8,23 +8,24 @@ import streamlit.components.v1 as components
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- 🚀 AD LAYOUT FIX (Munnadi neenga sonna adhe design) ---
-def show_ads_fixed():
-    # Inga dhaan neenga kudutha pudhu script-a force load panna veikkiraen
-    # Sandbox permissions sethurukkaen, idhu scripts-a block pannaadhu
-    ad_html = f"""
-    <div style="background-color: #ffffff; border: 2px solid #007bff; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; min-height: 250px; box-shadow: 0px 4px 6px rgba(0,0,0,0.1);">
-        <p style="color: #007bff; font-weight: bold; font-size: 15px; margin-bottom: 10px;">🛡️ Sponsored Content</p>
-        
-        <div id="adsterra-zone">
-            <script type='text/javascript' src='https://pl28477503.effectivegatecpm.com/47/81/4c/47814c075272639cd29456ec395859e2.js'></script>
-        </div>
-        
-        <p style="color: #888; font-size: 10px; margin-top: 15px;">Ad loading... Please wait 5-10 seconds.</p>
-    </div>
+# --- 🚀 EARNINGS AD LAYOUT (Direct Script Injection) ---
+def show_earning_ads():
+    # Inga dhaan neenga kudutha pudhu script-a direct-ah force load panna veikkiraen
+    # Inga iframe structure-a clean-ah maathi irukkaen, block aagaadhu
+    ad_code = f"""
+    <html>
+        <body style="margin:0; padding:0; display:flex; justify-content:center; align-items:center;">
+            <div style="width:100%; text-align:center; background-color: #f9f9f9; border: 2px solid #007bff; border-radius: 10px; padding: 15px;">
+                <p style="font-family: sans-serif; color: #007bff; font-weight: bold; margin-bottom: 10px;">🛡️ Sponsored Content (Loading Ads...)</p>
+                
+                <script type="text/javascript" src="https://pl28477503.effectivegatecpm.com/47/81/4c/47814c075272639cd29456ec395859e2.js"></script>
+                
+            </div>
+        </body>
+    </html>
     """
-    # height=300 and scrolling=True kudutha script-ku nalla space kedaikkum
-    components.html(ad_html, height=310, scrolling=False)
+    # height=320 kudutha dhaan periya banners render aaga space kedaikkum
+    components.html(ad_code, height=320)
 
 # --- 💰 PAYMENT & SIDEBAR ---
 upi_url = "upi://pay?pa=7094914276@okicici&pn=Royal%20PDF&cu=INR"
@@ -36,11 +37,12 @@ st.sidebar.markdown(f'<a href="{upi_url}" target="_blank"><div style="background
 # --- 🚀 MAIN APP ---
 if app_mode == "👑 Premium Plan":
     st.title("👑 Royal PDF Premium")
-    st.markdown(f'<a href="{upi_url}"><button style="width:100%; height:60px; background:#28a745; color:white; border-radius:12px; font-weight:bold; font-size:18px; border:none; cursor:pointer;">🚀 Pay ₹99 via GPay</button></a>', unsafe_allow_html=True)
+    st.markdown(f'<a href="{upi_url}"><button style="width:100%; height:60px; background:#28a745; color:white; border-radius:12px; font-weight:bold; font-size:18px;">🚀 Pay ₹99 via GPay</button></a>', unsafe_allow_html=True)
 
 else:
-    # Munnadi layout vandha maadhiriye Title-ku mela kaatrom
-    show_ads_fixed()
+    # Earning Ads First
+    show_earning_ads()
+    
     st.title(f"📂 {app_mode}")
 
     if app_mode == "Merge PDFs":
@@ -69,7 +71,7 @@ else:
             if st.button("🚀 Apply"):
                 indices = [int(x.split(" ")[1]) - 1 for x in sorted_items]
                 doc.select(indices)
-                st.download_button("📥 Download", data=doc.tobytes(), file_name="fixed.pdf")
+                st.download_button("📥 Download", data=doc.tobytes(), file_name="organized.pdf")
 
     elif app_mode == "Images to PDF":
         imgs = st.file_uploader("Upload Images", type=["jpg","png","jpeg"], accept_multiple_files=True)
