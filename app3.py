@@ -8,27 +8,27 @@ import streamlit.components.v1 as components
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- 🚀 ADSTERRA ADS LOGIC (Visible Version) ---
+# --- 🚀 MULTI-DEVICE ADS LOGIC ---
 def show_top_ad():
-    # Top Banner Ad
+    # Indha code PC-layum Mobile-layum ads-a force panni kaatum
     ad_html = """
-    <div style="text-align:center; min-height: 150px;">
+    <div style="text-align:center; width:100%; overflow:hidden; min-height: 100px; margin-bottom: 20px;">
         <script type='text/javascript' src='https://pl28476980.effectivegatecpm.com/3f/ef/4a/3fef4a10ead8e81f2c13e14909da9ce3.js'></script>
     </div>
     """
-    components.html(ad_html, height=150)
+    # PC-la nalla therya height-a adjust pannirukkaen
+    components.html(ad_html, height=120)
 
 # --- 💰 PAYMENT CONFIG ---
 gpay_number = "7094914276"
-# UPI link for direct GPay payment
 upi_url = f"upi://pay?pa={gpay_number}@okicici&pn=Royal%20PDF%20Product&cu=INR"
 
-# --- 🛠️ SIDEBAR NAVIGATION ---
+# --- 🛠️ SIDEBAR ---
 st.sidebar.title("📑 Royal PDF Menu")
 app_mode = st.sidebar.radio("Select Tool", ["Merge PDFs", "Split PDF", "Organize/Delete Pages", "Images to PDF", "👑 Premium Plan"])
 
 st.sidebar.markdown("---")
-# Buy Me a Coffee (Always visible in sidebar)
+# Coffee Button in Sidebar
 st.sidebar.markdown(f'''
     <a href="{upi_url}" target="_blank" style="text-decoration: none;">
         <div style="background-color: #FFDD00; color: black; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; border: 2px solid black;">
@@ -37,14 +37,14 @@ st.sidebar.markdown(f'''
     </a>
 ''', unsafe_allow_html=True)
 
-# --- 👑 PREMIUM PAGE LOGIC ---
+# --- 👑 PREMIUM PAGE ---
 if app_mode == "👑 Premium Plan":
     st.title("👑 Royal PDF Premium")
-    st.write("Upgrade for ₹99 to remove ads and unlock priority processing.")
+    st.write("PC and Mobile users can upgrade to remove ads.")
     
     col1, col2 = st.columns(2)
     with col1:
-        st.info("✅ No Ads | ✅ Faster Processing | ✅ Support Us")
+        st.success("✅ Ad-Free Experience | ✅ Unlimited Files")
         st.markdown(f'''
             <a href="{upi_url}" target="_blank" style="text-decoration: none;">
                 <div style="background-color: #34a853; color: white; padding: 20px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 20px; border: 2px solid #2d8a45;">
@@ -52,14 +52,14 @@ if app_mode == "👑 Premium Plan":
                 </div>
             </a>
         ''', unsafe_allow_html=True)
-        st.caption(f"Payment sent to: {gpay_number}")
     
     with col2:
-        st.image("https://www.gstatic.com/images/branding/product/2x/google_pay_96dp.png", width=100)
+        st.write("Scan to pay from any UPI App")
+        # Inga unga QR code irundha add pannalaam
 
 # --- 🚀 TOOLS LOGIC ---
 else:
-    show_top_ad() # Ads show on top of every tool
+    show_top_ad() # Display Ads for both PC and Mobile
     st.title(f"🔥 {app_mode}")
 
     if app_mode == "Merge PDFs":
@@ -69,7 +69,7 @@ else:
             for f in files:
                 with fitz.open(stream=f.read(), filetype="pdf") as doc:
                     merged_doc.insert_pdf(doc)
-            st.download_button("📥 Download PDF", data=merged_doc.tobytes(), file_name="merged.pdf")
+            st.download_button("📥 Download", data=merged_doc.tobytes(), file_name="merged.pdf")
 
     elif app_mode == "Split PDF":
         file = st.file_uploader("Upload PDF", type="pdf")
