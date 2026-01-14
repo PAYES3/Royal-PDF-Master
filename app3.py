@@ -8,25 +8,19 @@ import streamlit.components.v1 as components
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- 🚀 ADSTERRA ADS (PC & Mobile-la vara fixed script) ---
-def show_ads_top():
+# --- 🚀 MOBILE-ONLY ADS (Old Working Method) ---
+def show_mobile_ads():
+    # PC-la block aagaama irukka direct script injection
+    # Idhu mobile-la social bar and banner-a activate pannum
     ad_code = """
-    <div style="text-align:center; margin: 10px 0; min-height: 100px;">
-        <script type="text/javascript">
-            atOptions = {
-                'key' : '3fef4a10ead8e81f2c13e14909da9ce3',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-        <script type="text/javascript" src="//www.highperformancegate.com/3fef4a10ead8e81f2c13e14909da9ce3/invoke.js"></script>
+    <div style="text-align:center; margin-bottom: 10px;">
+        <script type='text/javascript' src='https://pl28476980.effectivegatecpm.com/3f/ef/4a/3fef4a10ead8e81f2c13e14909da9ce3.js'></script>
     </div>
     """
-    components.html(ad_code, height=120)
+    # height kammiya vecha PC-la theryaadhu, aana mobile-la script run aagum
+    components.html(ad_code, height=100)
 
-# --- 💰 PAYMENT & PREMIUM CONFIG ---
+# --- 💰 PAYMENT & PREMIUM ---
 gpay_number = "7094914276"
 upi_url = f"upi://pay?pa={gpay_number}@okicici&pn=Royal%20PDF%20Product&cu=INR"
 
@@ -51,7 +45,7 @@ st.sidebar.markdown(f'''
     </a>
 ''', unsafe_allow_html=True)
 
-# --- 🖼️ REUSABLE PREVIEW FUNCTION ---
+# --- 🖼️ REUSABLE PREVIEW FUNCTION (Full 140 Lines Logic) ---
 def show_pdf_preview(file_bytes, key_prefix):
     try:
         doc = fitz.open(stream=file_bytes, filetype="pdf")
@@ -69,22 +63,18 @@ def show_pdf_preview(file_bytes, key_prefix):
 # --- 👑 PREMIUM PAGE ---
 if app_mode == "👑 Premium Plan":
     st.title("👑 Royal PDF Premium")
-    st.info("Upgrade for ₹99 to remove ads and process large files instantly.")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown(f'''
-            <a href="{upi_url}" target="_blank" style="text-decoration: none;">
-                <div style="background-color: #34a853; color: white; padding: 20px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 20px;">
-                    🚀 Pay ₹99 via GPay
-                </div>
-            </a>
-        ''', unsafe_allow_html=True)
-    with col2:
-        st.image("https://www.gstatic.com/images/branding/product/2x/google_pay_96dp.png", width=100)
+    st.info("Mobile users can upgrade for ₹99 to enjoy ad-free experience.")
+    st.markdown(f'''
+        <a href="{upi_url}" target="_blank" style="text-decoration: none;">
+            <div style="background-color: #34a853; color: white; padding: 20px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 20px;">
+                🚀 Pay ₹99 via GPay
+            </div>
+        </a>
+    ''', unsafe_allow_html=True)
 
-# --- 🚀 MAIN TOOLS (Full Logic Fixed) ---
+# --- 🚀 MAIN TOOLS ---
 else:
-    show_ads_top()
+    show_mobile_ads() # Script for Mobile
     st.title(f"🚀 Royal PDF {app_mode}")
 
     if app_mode == "Merge PDFs":
