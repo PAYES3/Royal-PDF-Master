@@ -6,8 +6,8 @@ import streamlit.components.v1 as components
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master | Enterprise Edition", page_icon="📑", layout="wide")
 
-# --- 🚀 PC BYPASS AD ENGINE ---
-def inject_pc_ads(label="PARTNER CONTENT", unique_key="ad1"):
+# --- 🚀 STABLE AD ENGINE (Error-Free) ---
+def inject_pc_ads(label="PARTNER CONTENT"):
     # Native Banner Script
     ad_html = f"""
     <div style="background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 12px; padding: 20px; text-align: center; margin: 15px auto; max-width: 1050px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
@@ -18,8 +18,8 @@ def inject_pc_ads(label="PARTNER CONTENT", unique_key="ad1"):
         </div>
     </div>
     """
-    # 'key' parameter is the secret to showing multiple ads without errors
-    components.html(ad_html, height=310, scrolling=False, key=unique_key)
+    # Removed the 'key' parameter to fix TypeError
+    components.html(ad_html, height=310, scrolling=False)
 
 # --- 💰 SIDEBAR & OFFICIAL BRANDING ---
 st.sidebar.title("📑 Royal PDF Master")
@@ -46,8 +46,9 @@ if app_mode == "👑 Premium Plan":
     st.markdown(f'<a href="{upi_url}"><button style="width:100%; height:60px; background:#28a745; color:white; border-radius:12px; font-weight:bold; font-size:18px; border:none; cursor:pointer;">Upgrade Now - ₹99</button></a>', unsafe_allow_html=True)
 
 else:
-    # 📢 1. TOP AD (Unique key: 'header_ad')
-    inject_pc_ads("OFFICIAL PARTNER", unique_key="header_ad")
+    # 📢 1. TOP AD (Wrapped in a container to isolate)
+    with st.container():
+        inject_pc_ads("OFFICIAL PARTNER")
     
     st.write("---")
     st.header(f"🛠️ {app_mode}")
@@ -88,4 +89,22 @@ else:
             out = fitz.open()
             for img in imgs:
                 img_data = img.read()
-                img_doc = fitz.open()
+                img_doc = fitz.open(stream=img_data, filetype=img.name.split(".")[-1])
+                pdf_bytes = img_doc.convert_to_pdf()
+                out.insert_pdf(fitz.open("pdf", pdf_bytes))
+            st.download_button("📥 Download PDF", data=out.tobytes(), file_name="images_to.pdf")
+
+    # 📢 2. FOOTER AD (Wrapped in a separate container)
+    st.write("---")
+    with st.container():
+        inject_pc_ads("RECOMMENDED RESOURCES")
+
+# --- 📜 PROFESSIONAL FOOTER ---
+st.markdown("---")
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.caption("© 2026 Royal PDF Master")
+with col2:
+    st.caption("Privacy Policy | Security Standards")
+with col3:
+    st.caption("Contact Support: 7094914276")
