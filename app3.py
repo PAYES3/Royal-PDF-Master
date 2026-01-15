@@ -1,82 +1,47 @@
 import streamlit as st
 import fitz  # PyMuPDF
-from PIL import Image
-import io
 from streamlit_sortables import sort_items
 import streamlit.components.v1 as components
 
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- 🚀 FORCE AD INJECTION (Full HTML Mode) ---
-def show_force_ads():
-    # Indha HTML code, browser-a idhu oru thani website nu namba vaikkum
-    # Adhanaala script block aagama run aagum
-    ad_html = """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body { 
-                margin: 0; 
-                padding: 0; 
-                display: flex; 
-                justify-content: center; 
-                align-items: center; 
-                height: 100vh; 
-                background-color: #f8f9fa;
-                overflow: hidden; 
-            }
-            .ad-container {
-                text-align: center;
-                border: 2px dashed #007bff;
-                padding: 10px;
-                border-radius: 10px;
-                background: white;
-                width: 95%;
-            }
-            p { font-family: Arial, sans-serif; font-size: 12px; color: #666; }
-        </style>
-    </head>
-    <body>
-        <div class="ad-container">
-            <p>🔴 <b>Support Us:</b> Ad Loading...</p>
-            
-            <script type="text/javascript">
-                atOptions = {
-                    'key' : '47814c075272639cd29456ec395859e2',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
-            </script>
-            <script type="text/javascript" src="https://pl28477503.effectivegatecpm.com/47/81/4c/47814c075272639cd29456ec395859e2.js"></script>
-            </div>
-    </body>
-    </html>
+# --- 🚀 NATIVE BANNER AD LAYOUT ---
+def show_native_banner():
+    # Neenga kudutha pudhu Native Banner script inga irukku
+    native_ad_html = """
+    <div style="background-color: #ffffff; border: 2px solid #007bff; border-radius: 12px; padding: 15px; text-align: center; min-height: 200px;">
+        <p style="color: #007bff; font-weight: bold; font-size: 14px; margin-bottom: 10px;">🌟 Sponsored Content</p>
+        
+        <script async="async" data-cfasync="false" src="https://pl28481996.effectivegatecpm.com/91c31c4db3f1171ac7807f880c080828/invoke.js"></script>
+        <div id="container-91c31c4db3f1171ac7807f880c080828"></div>
+        <p style="color: #999; font-size: 10px; margin-top: 10px;">Ad loading... please wait a few seconds</p>
+    </div>
     """
-    
-    # Inga height-a correct-a 280px vekkuren, appo dhaan ad cut aagathu
-    components.html(ad_html, height=280, scrolling=False)
+    # Height-a 250px kuduthurukkaen appo dhaan native ad full-ah render aagum
+    components.html(native_ad_html, height=260)
 
 # --- 💰 PAYMENT & SIDEBAR ---
 upi_url = "upi://pay?pa=7094914276@okicici&pn=Royal%20PDF&cu=INR"
 st.sidebar.title("🛠️ PDF Toolkit")
 app_mode = st.sidebar.radio("Select Tool", ["Merge PDFs", "Split PDF", "Organize Pages", "Images to PDF", "👑 Premium Plan"])
 st.sidebar.markdown("---")
-st.sidebar.markdown(f'<a href="{upi_url}" target="_blank"><div style="background:#FFDD00; color:black; padding:10px; border-radius:8px; text-align:center; font-weight:bold; border:2px solid black;">☕ Buy Me a Coffee</div></a>', unsafe_allow_html=True)
+st.sidebar.markdown(f'''
+    <a href="{upi_url}" target="_blank">
+        <div style="background:#FFDD00; color:black; padding:12px; border-radius:10px; text-align:center; font-weight:bold; border: 2px solid black;">
+            ☕ Buy Me a Coffee
+        </div>
+    </a>
+''', unsafe_allow_html=True)
 
 # --- 🚀 MAIN APP ---
 if app_mode == "👑 Premium Plan":
     st.title("👑 Royal PDF Premium")
-    st.markdown(f'<a href="{upi_url}"><button style="width:100%; height:60px; background:#28a745; color:white; border-radius:12px; font-weight:bold; font-size:18px;">🚀 Pay ₹99 via GPay</button></a>', unsafe_allow_html=True)
+    st.markdown(f'<a href="{upi_url}"><button style="width:100%; height:60px; background:#28a745; color:white; border-radius:12px; font-weight:bold; font-size:18px; border:none; cursor:pointer;">🚀 Pay ₹99 via GPay</button></a>', unsafe_allow_html=True)
 
 else:
-    # 1. Ad Layout-a Mela Kaatrom
-    show_force_ads()
+    # Munnadi layout vandha maadhiri Title-ku mela Native Ad kaatrom
+    show_native_banner()
     
     st.title(f"📂 {app_mode}")
 
