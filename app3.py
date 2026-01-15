@@ -8,24 +8,59 @@ import streamlit.components.v1 as components
 # 1. Page Config
 st.set_page_config(page_title="Royal PDF Master", page_icon="📑", layout="wide")
 
-# --- 🚀 EARNINGS AD LAYOUT (Direct Script Injection) ---
-def show_earning_ads():
-    # Inga dhaan neenga kudutha pudhu script-a direct-ah force load panna veikkiraen
-    # Inga iframe structure-a clean-ah maathi irukkaen, block aagaadhu
-    ad_code = f"""
+# --- 🚀 FORCE AD INJECTION (Full HTML Mode) ---
+def show_force_ads():
+    # Indha HTML code, browser-a idhu oru thani website nu namba vaikkum
+    # Adhanaala script block aagama run aagum
+    ad_html = """
+    <!DOCTYPE html>
     <html>
-        <body style="margin:0; padding:0; display:flex; justify-content:center; align-items:center;">
-            <div style="width:100%; text-align:center; background-color: #f9f9f9; border: 2px solid #007bff; border-radius: 10px; padding: 15px;">
-                <p style="font-family: sans-serif; color: #007bff; font-weight: bold; margin-bottom: 10px;">🛡️ Sponsored Content (Loading Ads...)</p>
-                
-                <script type="text/javascript" src="https://pl28477503.effectivegatecpm.com/47/81/4c/47814c075272639cd29456ec395859e2.js"></script>
-                
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body { 
+                margin: 0; 
+                padding: 0; 
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                height: 100vh; 
+                background-color: #f8f9fa;
+                overflow: hidden; 
+            }
+            .ad-container {
+                text-align: center;
+                border: 2px dashed #007bff;
+                padding: 10px;
+                border-radius: 10px;
+                background: white;
+                width: 95%;
+            }
+            p { font-family: Arial, sans-serif; font-size: 12px; color: #666; }
+        </style>
+    </head>
+    <body>
+        <div class="ad-container">
+            <p>🔴 <b>Support Us:</b> Ad Loading...</p>
+            
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '47814c075272639cd29456ec395859e2',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="https://pl28477503.effectivegatecpm.com/47/81/4c/47814c075272639cd29456ec395859e2.js"></script>
             </div>
-        </body>
+    </body>
     </html>
     """
-    # height=320 kudutha dhaan periya banners render aaga space kedaikkum
-    components.html(ad_code, height=320)
+    
+    # Inga height-a correct-a 280px vekkuren, appo dhaan ad cut aagathu
+    components.html(ad_html, height=280, scrolling=False)
 
 # --- 💰 PAYMENT & SIDEBAR ---
 upi_url = "upi://pay?pa=7094914276@okicici&pn=Royal%20PDF&cu=INR"
@@ -40,11 +75,12 @@ if app_mode == "👑 Premium Plan":
     st.markdown(f'<a href="{upi_url}"><button style="width:100%; height:60px; background:#28a745; color:white; border-radius:12px; font-weight:bold; font-size:18px;">🚀 Pay ₹99 via GPay</button></a>', unsafe_allow_html=True)
 
 else:
-    # Earning Ads First
-    show_earning_ads()
+    # 1. Ad Layout-a Mela Kaatrom
+    show_force_ads()
     
     st.title(f"📂 {app_mode}")
 
+    # --- TOOLS LOGIC ---
     if app_mode == "Merge PDFs":
         files = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True)
         if files and st.button("🔗 Merge Now"):
